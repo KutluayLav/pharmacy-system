@@ -23,7 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth/api")
+@RequestMapping("/api/auth")
 public class UserController {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
