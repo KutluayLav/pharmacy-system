@@ -40,10 +40,10 @@ public class SecurityConfig {
                 .cors(withDefaults()) // CORS  dışarıda
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/api/auth/register/**", "/api/auth/login/**",
-                                "/api/auth/refreshToken/**").
-                        permitAll()
-                        .requestMatchers("/api/auth/getuserinfo", "/api/auth/refreshToken/**").authenticated()
+                        .antMatchers("/api/auth/**", "/api/auth/register/**", "/api/auth/login/**", "/api/auth/refreshToken/**")
+                        .permitAll()
+                        .antMatchers("/api/auth/getuserinfo", "/api/auth/refreshToken/**")
+                        .authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

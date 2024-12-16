@@ -3,8 +3,10 @@ package com.lav.PharmacyApp.userservice.controller;
 
 import com.lav.PharmacyApp.userservice.dto.requestdto.CreateUserRequest;
 import com.lav.PharmacyApp.userservice.dto.requestdto.LoginUserRequestDto;
+import com.lav.PharmacyApp.userservice.dto.requestdto.RefreshTokenRequestDto;
 import com.lav.PharmacyApp.userservice.dto.responsedto.ApiResponseDto;
 import com.lav.PharmacyApp.userservice.dto.responsedto.LoginResponseDto;
+import com.lav.PharmacyApp.userservice.dto.responsedto.RefreshTokenResponse;
 import com.lav.PharmacyApp.userservice.dto.responsedto.UserResponseDto;
 import com.lav.PharmacyApp.userservice.model.RefreshToken;
 import com.lav.PharmacyApp.userservice.services.JwtService;
@@ -89,6 +91,19 @@ public class UserController {
             log.error("Error during logout", e);
             return new ResponseEntity<>("Error during logout", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PostMapping("/refreshToken")
+    public ResponseEntity<RefreshTokenResponse> refreshToken(@RequestBody RefreshTokenRequestDto refreshTokenRequest) {
+        return refreshTokenService.findByToken(refreshTokenRequest.getToken())
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String accessToken = jwtService.generateToken(user.getEmail());
+                    return ResponseEntity.ok(RefreshTokenResponse.builder()
+                            .accessToken(accessToken).token(refreshTokenRequest.getToken()).build());
+                }).orElseThrow(() -> new RuntimeException(
+                        "Refresh token is not in database!"));
     }
 
 }
