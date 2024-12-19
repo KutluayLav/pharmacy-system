@@ -1,15 +1,14 @@
 package com.lav.PharmacyApp.userservice.dto.requestdto;
 
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
-
-import javax.validation.constraints.NotNull;
 
 @Data
 public class LoginUserRequestDto {
 
-    @NotNull
+    @NotEmpty
     private String email;
-    @NotNull
+    @NotEmpty
     private String password;
 }

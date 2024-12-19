@@ -48,6 +48,8 @@ public class UserService implements UserDetailsService {
             return mapToUserResponseDto(existingUser.get());
         }
 
+        log.info("Creating new user. user first name: {}", user.getFirstName());
+
         User newUser = new User().builder()
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
@@ -57,6 +59,8 @@ public class UserService implements UserDetailsService {
                 .build();
 
         User savedUser=userRepository.save(newUser);
+
+        log.info("New user created. name: {}", savedUser.getFirstName());
 
         return mapToUserResponseDto(savedUser);
     }

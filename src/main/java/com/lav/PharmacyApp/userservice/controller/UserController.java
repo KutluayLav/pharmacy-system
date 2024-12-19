@@ -100,6 +100,7 @@ public class UserController {
                 .map(RefreshToken::getUser)
                 .map(user -> {
                     String accessToken = jwtService.generateToken(user.getEmail());
+                    log.info("Refresh token generated successfully");
                     return ResponseEntity.ok(RefreshTokenResponse.builder()
                             .accessToken(accessToken).token(refreshTokenRequest.getToken()).build());
                 }).orElseThrow(() -> new RuntimeException(
