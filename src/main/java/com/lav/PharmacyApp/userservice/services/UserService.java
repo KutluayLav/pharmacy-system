@@ -8,8 +8,10 @@ import com.lav.PharmacyApp.userservice.model.User;
 import com.lav.PharmacyApp.userservice.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -83,6 +85,30 @@ public class UserService implements UserDetailsService {
         );
     }
 
+    public UserResponseDto getUserDetails() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getName())) {
+                return null;
+            }
+
+            String loggedInEmail = authentication.getName();
+
+            Optional<User> userOptional = userRepository.findUserByEmail(loggedInEmail);
+
+            User user = userOptional.orElseThrow(() ->
+                    new UsernameNotFoundException("User not found with email: " + loggedInEmail));
+
+            UserResponseDto userDetails = mapToUserResponseDto(user);
+            log.info("UserDetails: {}", userDetails);
+            return userDetails;
+        } catch (Exception e) {
+            log.error("Error getting user details", e);
+            throw new RuntimeException("Error getting user details", e);
+        }
+    }
+
     private UserResponseDto mapToUserResponseDto(User user) {
         return new UserResponseDto(
                 user.getFirstName(),
@@ -93,7 +119,6 @@ public class UserService implements UserDetailsService {
                         .collect(Collectors.toSet())
         );
     }
-
 
 
 

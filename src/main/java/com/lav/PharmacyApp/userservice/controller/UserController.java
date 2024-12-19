@@ -107,4 +107,24 @@ public class UserController {
                         "Refresh token is not in database!"));
     }
 
+    @GetMapping("/getuserinfo")
+    public ResponseEntity<UserResponseDto> getUserDetailsFromToken(@RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new UserResponseDto());
+        }
+        try {
+            String token = authorizationHeader.substring(7);
+            String username = jwtService.extractUser(token);
+            UserResponseDto user = userService.getUserDetails();
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            UserResponseDto errorResponse = UserResponseDto.builder()
+                    .firstName("Authentication failed")
+                    .lastName("Authentication failed")
+                    .email("Authentication failed: " + e.getMessage())
+                    .build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
+    }
+
 }
