@@ -23,7 +23,7 @@ public class PharmacyService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
-        headers.set("Authorization", "apikey 2Y9K5hs28EbqlZid1983Z4:42jHYv4xdZxEHeWwpoG0xp"); // API anahtarınızı buraya ekleyin
+        headers.set("Authorization", "apikey ");
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
@@ -37,7 +37,7 @@ public class PharmacyService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
-        headers.set("Authorization", "apikey 2Y9K5hs28EbqlZid1983Z4:42jHYv4xdZxEHeWwpoG0xp");
+        headers.set("Authorization", "apikey");
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
 ß
